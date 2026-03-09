@@ -54,11 +54,10 @@ public void setMines()
 public void draw ()
 {
     background( 0 );
-
+    Interactive.draw();
    if(gameWon || gameOver) {
         fill(0, 150);
-        rect(width/2, height/2, width, height); // semi-transparent overlay
-
+        rect(width/2, height/2, width, height); 
         fill(255, 0, 0);
         textSize(40);
         textAlign(CENTER, CENTER);
