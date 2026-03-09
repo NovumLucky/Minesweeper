@@ -55,9 +55,15 @@ public void draw ()
 {
     background( 0 );
 
-    if(gameWon)
-      displayWinningMessage();    
-      displayLosingMessage();
+   if(gameWon || gameOver) {
+        fill(0, 150);
+        rect(width/2, height/2, width, height); // semi-transparent overlay
+
+        fill(255, 0, 0);
+        textSize(40);
+        textAlign(CENTER, CENTER);
+        text(gameWon ? "YOU WON\nPRESS ENTER" : "YOU LOST\nPRESS ENTER", width/2, height/2);
+    }
 
 }
 public boolean isWon()
