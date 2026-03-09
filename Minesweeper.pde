@@ -56,17 +56,8 @@ public void draw ()
     background( 0 );
 
     if(gameWon)
-         fill(0,150);
-        rect(0,0,width,height);
-        fill(0,255,0);
-        textSize(40);
-        text("YOU WON\nPRESS ENTER", width/2, height/2);
-    if(gameOver)
-       fill(0,150);
-        rect(0,0,width,height);
-        fill(255,0,0);
-        textSize(40);
-        text("YOU LOST\nPRESS ENTER", width/2, height/2);
+      displayWinningMessage();    
+      displayLosingMessage();
 
 }
 public boolean isWon()
@@ -87,19 +78,19 @@ public void displayLosingMessage()
 {
     //your code here
     fill(0,150);
-    rect(0,0,width,height);
+    rect(width/2,heihgt/2,width,height);
     fill(255,0,0);
     textSize(40);
-    text("YOU LOST PRESS ENTER",200,200);
+    text("YOU LOST, PRESS ENTER",200,200);
 }
 public void displayWinningMessage()
 {
     //your code here
     fill(0,150);
-    rect(0,0,width,height);
+    rect(width/2,height/2,width,height);
     fill(255,0,0);
     textSize(40);
-    text("YOU WON PRESS ENTER",200,200);
+    text("YOU WON, PRESS ENTER",200,200);
 }
 public boolean isValid(int r, int c)
 {
