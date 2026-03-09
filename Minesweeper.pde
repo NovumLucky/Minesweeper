@@ -167,17 +167,4 @@ public class MSButton {
   public void setLabel(int label) { myLabel = "" + label; }
   public boolean isFlagged() { return flagged; }
 }
-public void keyPressed() {
-  if (key == ENTER || keyCode == RETURN) {
-    gameOver = false;
-    mines.clear();
-    for (int r = 0; r < NUM_ROWS; r++) {
-      for (int c = 0; c < NUM_COLS; c++) {
-        buttons[r][c].clicked = false;
-        buttons[r][c].flagged = false;
-        buttons[r][c].myLabel = ""; // Direct reset
-      }
-    }
-    setMines();
-  }
-}
+
