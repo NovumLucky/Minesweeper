@@ -1,5 +1,4 @@
 
-Java
 import de.bezier.guido.*;
 
 private final static int NUM_ROWS = 20;
