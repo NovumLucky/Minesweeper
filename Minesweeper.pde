@@ -78,7 +78,7 @@ public void displayLosingMessage()
 {
     //your code here
     fill(0,150);
-    rect(width/2,heihgt/2,width,height);
+    rect(width/2,height/2,width,height);
     fill(255,0,0);
     textSize(40);
     text("YOU LOST, PRESS ENTER",200,200);
