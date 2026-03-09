@@ -160,11 +160,9 @@ public class MSButton
     }
 
     // called by manager
-    public void mousePressed () 
-    {
+       public void mousePressed () {
         if(gameOver || gameWon) return;
-        if(mouseButton == RIGHT)
-        {
+        if(mouseButton == RIGHT){
             if(!clicked)
                 flagged = !flagged;
             return;
@@ -172,9 +170,10 @@ public class MSButton
         if(flagged) return;
         clicked = true;
         //your code here
-        if(mines.contains(this))
+        if(mines.contains(this)){
             gameOver = true;
-        else
+        }
+        else {
             int n = countMines(myRow,myCol);
             if(n>0)
                 setLabel(n);
@@ -182,6 +181,7 @@ public class MSButton
                 revealEmpty(myRow,myCol);
             if(isWon())
                 gameWon = true;
+        }
     }
     public void draw () 
     {    
