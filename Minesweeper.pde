@@ -1,8 +1,3 @@
-If you are hosting this on GitHub (likely using Processing.js or p5.js for a web preview), there is a high chance the issue is how the web browser handles the recursive loop. In a browser, a deep recursion (like clicking an empty space that clears half the board) happens so fast that the "Win/Lose" labels get set and then immediately overwritten by the rest of the recursion finishing.
-
-Also, if you are using an older version of the Guido library, it can be very picky about when setLabel is called.
-
-Here is the final, consolidated code. I have added a "protection" check inside the setLabel method: if the game is over, the buttons will refuse to change their labels to anything else. This ensures "YOU LOSE!" stays on the screen.
 
 Java
 import de.bezier.guido.*;
