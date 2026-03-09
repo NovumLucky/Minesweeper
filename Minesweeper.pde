@@ -57,7 +57,8 @@ public void draw ()
 
     if(gameWon)
         displayWinningMessage();
-    else if(gameOver)
+
+    if(gameOver)
         displayLosingMessage();
 }
 public boolean isWon()
