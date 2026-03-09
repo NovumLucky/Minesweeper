@@ -1,194 +1,166 @@
+If you are hosting this on GitHub (likely using Processing.js or p5.js for a web preview), there is a high chance the issue is how the web browser handles the recursive loop. In a browser, a deep recursion (like clicking an empty space that clears half the board) happens so fast that the "Win/Lose" labels get set and then immediately overwritten by the rest of the recursion finishing.
+
+Also, if you are using an older version of the Guido library, it can be very picky about when setLabel is called.
+
+Here is the final, consolidated code. I have added a "protection" check inside the setLabel method: if the game is over, the buttons will refuse to change their labels to anything else. This ensures "YOU LOSE!" stays on the screen.
+
+Java
 import de.bezier.guido.*;
+
 private final static int NUM_ROWS = 20;
 private final static int NUM_COLS = 20;
-private MSButton[][] buttons; //2d array of minesweeper buttons
-private ArrayList <MSButton> mines = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
+private MSButton[][] buttons;
+private ArrayList<MSButton> mines = new ArrayList<MSButton>();
 private boolean gameOver = false;
 
-void setup ()
-{
-    size(400, 400);
-    textAlign(CENTER,CENTER);
-    
-    // make the manager
-    Interactive.make( this );
-    
-    //your code to initialize buttons goes here
-    buttons = new MSButton[NUM_ROWS][NUM_COLS];
-    for (int r = 0; r < NUM_ROWS; r++) {
-        for (int c = 0; c < NUM_COLS; c++) {
-            buttons[r][c] = new MSButton(r, c);
-        }
+void setup() {
+  size(400, 400);
+  textAlign(CENTER, CENTER);
+  Interactive.make(this);
+
+  buttons = new MSButton[NUM_ROWS][NUM_COLS];
+  for (int r = 0; r < NUM_ROWS; r++) {
+    for (int c = 0; c < NUM_COLS; c++) {
+      buttons[r][c] = new MSButton(r, c);
     }
-    
-    setMines();
+  }
+  setMines();
+}
+
+public void setMines() {
+  while (mines.size() < 40) {
+    int r = (int)(Math.random() * NUM_ROWS);
+    int c = (int)(Math.random() * NUM_COLS);
+    if (!mines.contains(buttons[r][c])) {
+      mines.add(buttons[r][c]);
+    }
+  }
 }
 
 public void keyPressed() {
-    if (key == ENTER || keyCode == RETURN) {
-        gameOver = false;
-        mines.clear();
-        for (int r = 0; r < NUM_ROWS; r++) {
-            for (int c = 0; c < NUM_COLS; c++) {
-                buttons[r][c].clicked = false;
-                buttons[r][c].flagged = false;
-                buttons[r][c].setLabel("");
-            }
-        }
-        setMines();
-    }
-}
-
-public void setMines()
-{
-    //your code
-    while (mines.size() < 40) {
-        int r = (int)(Math.random() * NUM_ROWS);
-        int c = (int)(Math.random() * NUM_COLS);
-        if (!mines.contains(buttons[r][c])) {
-            mines.add(buttons[r][c]);
-        }
-    }
-}
-
-public void draw ()
-{
-    background( 0 );
-    // Removed the repeating call from draw to prevent overwriting labels
-}
-
-public boolean isWon()
-{
-    //your code here
-    int count = 0;
+  if (key == ENTER || keyCode == RETURN) {
+    gameOver = false;
+    mines.clear();
     for (int r = 0; r < NUM_ROWS; r++) {
-        for (int c = 0; c < NUM_COLS; c++) {
-            if (buttons[r][c].clicked && !mines.contains(buttons[r][c])) {
-                count++;
+      for (int c = 0; c < NUM_COLS; c++) {
+        buttons[r][c].clicked = false;
+        buttons[r][c].flagged = false;
+        buttons[r][c].myLabel = ""; // Direct reset
+      }
+    }
+    setMines();
+  }
+}
+
+public void draw() {
+  background(0);
+  // Logic handled in mousePressed to prevent web-browser lag
+}
+
+public boolean isWon() {
+  for (int r = 0; r < NUM_ROWS; r++) {
+    for (int c = 0; c < NUM_COLS; c++) {
+      if (!mines.contains(buttons[r][c]) && !buttons[r][c].clicked) return false;
+    }
+  }
+  return true;
+}
+
+public void displayLosingMessage() {
+  gameOver = true;
+  for (MSButton m : mines) m.clicked = true;
+  
+  String msg = "YOU LOSE!";
+  int startCol = (NUM_COLS / 2) - (msg.length() / 2);
+  for (int i = 0; i < msg.length(); i++) {
+    buttons[NUM_ROWS/2][startCol + i].myLabel = msg.substring(i, i+1);
+  }
+}
+
+public void displayWinningMessage() {
+  gameOver = true;
+  String msg = "YOU WIN!";
+  int startCol = (NUM_COLS / 2) - (msg.length() / 2);
+  for (int i = 0; i < msg.length(); i++) {
+    buttons[NUM_ROWS/2][startCol + i].myLabel = msg.substring(i, i+1);
+  }
+}
+
+public boolean isValid(int r, int c) {
+  return r >= 0 && r < NUM_ROWS && c >= 0 && c < NUM_COLS;
+}
+
+public int countMines(int row, int col) {
+  int numMines = 0;
+  for (int r = row - 1; r <= row + 1; r++) {
+    for (int c = col - 1; c <= col + 1; c++) {
+      if (isValid(r, c) && mines.contains(buttons[r][c])) numMines++;
+    }
+  }
+  return numMines;
+}
+
+public class MSButton {
+  private int myRow, myCol;
+  private float x, y, width, height;
+  private boolean clicked, flagged;
+  private String myLabel;
+
+  public MSButton (int row, int col) {
+    width = 400.0/NUM_COLS;
+    height = 400.0/NUM_ROWS;
+    myRow = row;
+    myCol = col; 
+    x = myCol*width;
+    y = myRow*height;
+    myLabel = "";
+    flagged = clicked = false;
+    Interactive.add(this);
+  }
+
+  public void mousePressed() {
+    if (gameOver) return;
+
+    if (mouseButton == RIGHT) {
+      flagged = !flagged;
+      if (!flagged) clicked = false;
+    } else if (!flagged) {
+      clicked = true;
+      if (mines.contains(this)) {
+        displayLosingMessage();
+      } else if (countMines(myRow, myCol) > 0) {
+        setLabel(countMines(myRow, myCol));
+      } else {
+        for (int r = myRow-1; r <= myRow+1; r++) {
+          for (int c = myCol-1; c <= myCol+1; c++) {
+            if (isValid(r, c) && !buttons[r][c].clicked) {
+              buttons[r][c].mousePressed();
             }
+          }
         }
+      }
     }
-    return count == (NUM_ROWS * NUM_COLS) - mines.size();
-}
-
-public void displayLosingMessage()
-{
-    //your code here
-    gameOver = true;
-    for (MSButton m : mines) {
-        m.clicked = true;
-    }
-    String msg = "YOU LOSE!";
-    for(int i = 0; i < msg.length(); i++) {
-        buttons[NUM_ROWS/2][(NUM_COLS/2 - msg.length()/2) + i].setLabel(msg.substring(i, i+1));
-    }
-}
-
-public void displayWinningMessage()
-{
-    //your code here
-    gameOver = true;
-    String msg = "YOU WIN!";
-    for(int i = 0; i < msg.length(); i++) {
-        buttons[NUM_ROWS/2][(NUM_COLS/2 - msg.length()/2) + i].setLabel(msg.substring(i, i+1));
-    }
-}
-
-public boolean isValid(int r, int c)
-{
-    //your code here
-    return r >= 0 && r < NUM_ROWS && c >= 0 && c < NUM_COLS;
-}
-
-public int countMines(int row, int col)
-{
-    int numMines = 0;
-    //your code here
-    for (int r = row - 1; r <= row + 1; r++) {
-        for (int c = col - 1; c <= col + 1; c++) {
-            if (isValid(r, c) && mines.contains(buttons[r][c])) {
-                numMines++;
-            }
-        }
-    }
-    return numMines;
-}
-
-public class MSButton
-{
-    private int myRow, myCol;
-    private float x,y, width, height;
-    private boolean clicked, flagged;
-    private String myLabel;
     
-    public MSButton ( int row, int col )
-    {
-        width = 400/NUM_COLS;
-        height = 400/NUM_ROWS;
-        myRow = row;
-        myCol = col; 
-        x = myCol*width;
-        y = myRow*height;
-        myLabel = "";
-        flagged = clicked = false;
-        Interactive.add( this ); // register it with the manager
-    }
+    if (!gameOver && isWon()) displayWinningMessage();
+  }
 
-    public void mousePressed () 
-    {
-        if (gameOver) return;
+  public void draw() {    
+    if (flagged) fill(0);
+    else if (clicked && mines.contains(this)) fill(255, 0, 0);
+    else if (clicked) fill(200);
+    else fill(100);
 
-        if (mouseButton == RIGHT) {
-            flagged = !flagged;
-            if (!flagged) clicked = false;
-        } else if (!flagged) {
-            clicked = true;
-            if (mines.contains(this)) {
-                displayLosingMessage();
-            } else if (countMines(myRow, myCol) > 0) {
-                setLabel(countMines(myRow, myCol));
-            } else {
-                for (int r = myRow - 1; r <= myRow + 1; r++) {
-                    for (int c = myCol - 1; c <= myCol + 1; c++) {
-                        if (isValid(r, c) && !buttons[r][c].clicked) {
-                            buttons[r][c].mousePressed();
-                        }
-                    }
-                }
-            }
-        }
-        
-        // Check win condition after the click/recursion finishes
-        if (!gameOver && isWon()) {
-            displayWinningMessage();
-        }
-    }
+    rect(x, y, width, height);
+    fill(0);
+    // Use the variable directly to ensure draw doesn't miss updates
+    text(myLabel, x+width/2, y+height/2);
+  }
 
-    public void draw () 
-    {   
-        if (flagged)
-            fill(0);
-        else if( clicked && mines.contains(this) ) 
-             fill(255,0,0);
-        else if(clicked)
-            fill( 200 );
-        else 
-            fill( 100 );
+  public void setLabel(String newLabel) {
+    if (!gameOver) myLabel = newLabel;
+  }
 
-        rect(x, y, width, height);
-        fill(0);
-        text(myLabel,x+width/2,y+height/2);
-    }
-    public void setLabel(String newLabel)
-    {
-        myLabel = newLabel;
-    }
-    public void setLabel(int newLabel)
-    {
-        myLabel = ""+ newLabel;
-    }
-    public boolean isFlagged()
-    {
-        return flagged;
-    }
+  public void setLabel(int newLabel) {
+    if (!gameOver) myLabel = "" + newLabel;
+  }
 }
