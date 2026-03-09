@@ -54,21 +54,23 @@ public void setMines()
 public void draw ()
 {
     background( 0 );
-    if(isWon() == true && !gameOver)
-        displayWinningMessage();
+    // Removed the repeating call from draw to prevent overwriting labels
 }
+
 public boolean isWon()
 {
     //your code here
+    int count = 0;
     for (int r = 0; r < NUM_ROWS; r++) {
         for (int c = 0; c < NUM_COLS; c++) {
-            if (!mines.contains(buttons[r][c]) && !buttons[r][c].clicked) {
-                return false;
+            if (buttons[r][c].clicked && !mines.contains(buttons[r][c])) {
+                count++;
             }
         }
     }
-    return true;
+    return count == (NUM_ROWS * NUM_COLS) - mines.size();
 }
+
 public void displayLosingMessage()
 {
     //your code here
@@ -81,6 +83,7 @@ public void displayLosingMessage()
         buttons[NUM_ROWS/2][(NUM_COLS/2 - msg.length()/2) + i].setLabel(msg.substring(i, i+1));
     }
 }
+
 public void displayWinningMessage()
 {
     //your code here
@@ -90,11 +93,13 @@ public void displayWinningMessage()
         buttons[NUM_ROWS/2][(NUM_COLS/2 - msg.length()/2) + i].setLabel(msg.substring(i, i+1));
     }
 }
+
 public boolean isValid(int r, int c)
 {
     //your code here
     return r >= 0 && r < NUM_ROWS && c >= 0 && c < NUM_COLS;
 }
+
 public int countMines(int row, int col)
 {
     int numMines = 0;
@@ -108,6 +113,7 @@ public int countMines(int row, int col)
     }
     return numMines;
 }
+
 public class MSButton
 {
     private int myRow, myCol;
@@ -128,7 +134,6 @@ public class MSButton
         Interactive.add( this ); // register it with the manager
     }
 
-    // called by manager
     public void mousePressed () 
     {
         if (gameOver) return;
@@ -152,7 +157,13 @@ public class MSButton
                 }
             }
         }
+        
+        // Check win condition after the click/recursion finishes
+        if (!gameOver && isWon()) {
+            displayWinningMessage();
+        }
     }
+
     public void draw () 
     {   
         if (flagged)
