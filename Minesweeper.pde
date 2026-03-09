@@ -181,6 +181,8 @@ public class MSButton
             int n = countMines(myRow,myCol);
             if(n>0)
                 setLabel(n);
+            else if(clicked)
+                fill(200);
             else
                 revealEmpty(myRow,myCol);
             if(isWon())
