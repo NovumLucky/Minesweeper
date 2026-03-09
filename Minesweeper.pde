@@ -3,6 +3,7 @@ private final static int NUM_ROWS = 20;
 private final static int NUM_COLS = 20;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> mines = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
+private boolean gameOver = false;
 
 void setup ()
 {
@@ -25,6 +26,7 @@ void setup ()
 
 public void keyPressed() {
     if (key == ENTER || keyCode == RETURN) {
+        gameOver = false;
         mines.clear();
         for (int r = 0; r < NUM_ROWS; r++) {
             for (int c = 0; c < NUM_COLS; c++) {
@@ -52,7 +54,7 @@ public void setMines()
 public void draw ()
 {
     background( 0 );
-    if(isWon() == true)
+    if(isWon() == true && !gameOver)
         displayWinningMessage();
 }
 public boolean isWon()
@@ -70,6 +72,7 @@ public boolean isWon()
 public void displayLosingMessage()
 {
     //your code here
+    gameOver = true;
     for (MSButton m : mines) {
         m.clicked = true;
     }
@@ -81,6 +84,7 @@ public void displayLosingMessage()
 public void displayWinningMessage()
 {
     //your code here
+    gameOver = true;
     String msg = "YOU WIN!";
     for(int i = 0; i < msg.length(); i++) {
         buttons[NUM_ROWS/2][(NUM_COLS/2 - msg.length()/2) + i].setLabel(msg.substring(i, i+1));
@@ -127,6 +131,8 @@ public class MSButton
     // called by manager
     public void mousePressed () 
     {
+        if (gameOver) return;
+
         if (mouseButton == RIGHT) {
             flagged = !flagged;
             if (!flagged) clicked = false;
