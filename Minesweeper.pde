@@ -78,7 +78,7 @@ public boolean isWon()
 public void displayLosingMessage()
 {
     //your code here
-    fill(0,150);
+    fill(0,220);
     rect(0,0,width,height);
     fill(255,0,0);
     textSize(40);
@@ -87,7 +87,7 @@ public void displayLosingMessage()
 public void displayWinningMessage()
 {
     //your code here
-    fill(0,150);
+    fill(0,220);
     rect(0,0,width,height);
     fill(255,0,0);
     textSize(40);
@@ -170,11 +170,13 @@ public class MSButton
             return;
         }
         if(flagged) return;
-        clicked = true;
-        //your code here
-        if(mines.contains(this)){
+ if(mines.contains(this)){
+            clicked = true;
             gameOver = true;
+            for(MSButton m : mines){
+                m.clicked = true; // reveal all mines
         }
+}
         else {
             int n = countMines(myRow,myCol);
             if(n>0)
