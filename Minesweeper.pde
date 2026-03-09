@@ -82,7 +82,7 @@ public void displayLosingMessage()
     rect(0,0,width,height);
     fill(255,0,0);
     textSize(40);
-    text("YOU LOST\nPRESS ENTER",200,200);
+    text("YOU LOST PRESS ENTER",200,200);
 }
 public void displayWinningMessage()
 {
@@ -91,7 +91,7 @@ public void displayWinningMessage()
     rect(0,0,width,height);
     fill(255,0,0);
     textSize(40);
-    text("YOU WON\nPRESS ENTER",200,200);
+    text("YOU WON PRESS ENTER",200,200);
 }
 public boolean isValid(int r, int c)
 {
