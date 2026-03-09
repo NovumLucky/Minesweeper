@@ -56,10 +56,18 @@ public void draw ()
     background( 0 );
 
     if(gameWon)
-        displayWinningMessage();
-
+         fill(0,150);
+        rect(0,0,width,height);
+        fill(0,255,0);
+        textSize(40);
+        text("YOU WON\nPRESS ENTER", width/2, height/2);
     if(gameOver)
-        displayLosingMessage();
+       fill(0,150);
+        rect(0,0,width,height);
+        fill(255,0,0);
+        textSize(40);
+        text("YOU LOST\nPRESS ENTER", width/2, height/2);
+
 }
 public boolean isWon()
 {
@@ -179,14 +187,13 @@ public class MSButton
 }
         else {
             int n = countMines(myRow,myCol);
-            if(n>0)
-                setLabel(n);
-            else if(clicked)
-                fill(200);
-            else
-                revealEmpty(myRow,myCol);
-            if(isWon())
-                gameWon = true;
+    clicked = true; // <-- ADD THIS LINE
+    if(n > 0)
+        setLabel(n);
+    else
+        revealEmpty(myRow,myCol);
+    if(isWon())
+        gameWon = true;
         }
     }
     public void draw () 
