@@ -69,14 +69,13 @@ boolean isWon() {
   return true;
 }
 
-public void displayLosingMessage()
-{
-    //your code here
-    fill(0,180);
-    rect(0,0,width,height);
-    fill(255,0,0);
-    textSize(40);
-    text("YOU LOST\nPress ENTER",width/2,height/2);
+void displayLosingMessage() {
+  gameOver = true;
+text("YOU LOST\nPress ENTER",width/2,height/2);
+  for (MSButton b : mines) {
+    b.clicked = true;
+    b.setLabel("X");
+  }
 }
 
 void displayWinningMessage() {
