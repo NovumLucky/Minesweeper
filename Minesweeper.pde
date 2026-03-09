@@ -71,7 +71,6 @@ boolean isWon() {
 
 void displayLosingMessage() {
   gameOver = true;
-text("YOU LOST\nPress ENTER",width/2,height/2);
   for (MSButton b : mines) {
     b.clicked = true;
     b.setLabel("X");
