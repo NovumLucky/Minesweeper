@@ -56,7 +56,7 @@ public void draw ()
     background( 0 );
     if(gameWon)
         displayWinningMessage();
-    if(gameOver)
+    else if(gameOver)
         displayLosingMessage();
 }
 public boolean isWon()
@@ -162,18 +162,26 @@ public class MSButton
     // called by manager
     public void mousePressed () 
     {
+        if(gameOver || gameWon) return;
+        if(mouseButton == RIGHT)
+        {
+            if(!clicked)
+                flagged = !flagged;
+            return;
+        }
+        if(flagged) return;
         clicked = true;
         //your code here
         if(mines.contains(this))
-        {
-            displayLosingMessage();
-        }
+            gameOver = true;
         else
-        {
             int n = countMines(myRow,myCol);
             if(n>0)
                 setLabel(n);
-        }
+            else
+                revealEmpty(myRow,myCol);
+            if(isWon())
+                gameWon = true;
     }
     public void draw () 
     {    
