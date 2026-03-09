@@ -78,7 +78,7 @@ public boolean isWon()
 public void displayLosingMessage()
 {
     //your code here
-    fill(0,220);
+    fill(0,150);
     rect(0,0,width,height);
     fill(255,0,0);
     textSize(40);
@@ -87,7 +87,7 @@ public void displayLosingMessage()
 public void displayWinningMessage()
 {
     //your code here
-    fill(0,220);
+    fill(0,150);
     rect(0,0,width,height);
     fill(255,0,0);
     textSize(40);
