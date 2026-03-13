@@ -40,21 +40,8 @@ void setMines() {
 
 void draw() {
   background(0);
-
-  for (int r = 0; r < NUM_ROWS; r++) {
-    for (int c = 0; c < NUM_COLS; c++) {
-      buttons[r][c].draw();    
-    }
-  }
-
-  if (gameOver) {
-    textSize(32);
-    fill(255, 255, 0);
-    textAlign(CENTER, CENTER);
-    if (gameWon) {
-      text("You won! Play again!", width/2, height/2);
-    } else {
-      text("You lost! Try again!", width/2, height/2);
+if (isWon())
+  displayWinningMessage();
     }
   }
 }
@@ -70,16 +57,19 @@ boolean isWon() {
 }
 
 void displayLosingMessage() {
-  gameOver = true;
-  for (MSButton b : mines) {
-    b.clicked = true;
-    b.setLabel("X");
-  }
+  for (MSButton m : mines) {
+        m.clicked = true;
+    }
+    buttons[NUM_ROWS/2][(NUM_COLS/2)-2].setLabel("L");
+    buttons[NUM_ROWS/2][(NUM_COLS/2)-1].setLabel("O");
+    buttons[NUM_ROWS/2][NUM_COLS/2].setLabel("S");
+    buttons[NUM_ROWS/2][(NUM_COLS/2)+1].setLabel("E");
 }
 
 void displayWinningMessage() {
-  gameOver = true;
-  gameWon = true;
+ buttons[NUM_ROWS/2][(NUM_COLS/2)-1].setLabel("W");
+    buttons[NUM_ROWS/2][NUM_COLS/2].setLabel("I");
+    buttons[NUM_ROWS/2][(NUM_COLS/2)+1].setLabel("N");
 }
 
 boolean isValid(int r, int c) {
