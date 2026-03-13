@@ -55,6 +55,7 @@ boolean isWon() {
 }
 
 void displayLosingMessage() {
+gameOver = true;
   for (MSButton m : mines) {
         m.clicked = true;
     }
@@ -65,6 +66,7 @@ void displayLosingMessage() {
 }
 
 void displayWinningMessage() {
+gameOver = true;
  buttons[NUM_ROWS/2][(NUM_COLS/2)-1].setLabel("W");
     buttons[NUM_ROWS/2][NUM_COLS/2].setLabel("I");
     buttons[NUM_ROWS/2][(NUM_COLS/2)+1].setLabel("N");
