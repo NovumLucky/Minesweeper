@@ -43,8 +43,6 @@ void draw() {
 if (isWon())
   displayWinningMessage();
     }
-  }
-}
 
 boolean isWon() {
   for (int r = 0; r < NUM_ROWS; r++) {
