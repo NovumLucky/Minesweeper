@@ -8,7 +8,7 @@ private MSButton[][] buttons;
 private ArrayList<MSButton> mines;
 
 boolean gameOver = false;
-boolean gameWon = true;
+boolean gameWon = false;
 
 void setup() {
   size(400, 400);
